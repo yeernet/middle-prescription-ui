@@ -1,0 +1,37 @@
+@import '~antd/dist/antd.css';
+.underline {
+  text-decoration: underline;
+}
+.recipe-user-info-item {
+  display: inline-block;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+.recipe-user-info-line {
+  display: flex;
+  justify-content: space-between;
+}
+.middle-prescription-ui--recipe-table th{
+  text-align: left;
+}
+
+
+.middle-prescription-ui .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+.middle-prescription-ui .ant-select-selector,
+.middle-prescription-ui .ant-input-number{
+  border: 0 !important;
+  border-bottom: 1px solid #333 !important;
+  border-radius: 0 !important;
+}
+.middle-prescription-ui input,
+.middle-prescription-ui textarea {
+  outline: none !important;
+  height: 24px !important;
+}
+
+.middle-prescription-ui *,
+.middle-prescription-ui *:hover,
+.middle-prescription-ui *:focus,
+.middle-prescription-ui *:active {
+  outline: none !important;
+}
