@@ -6,6 +6,7 @@ import './App.css'
 
 function App () {
   return <span style={{ fontSize: '12px' }}>
+    <div style={{ height: '50px' }}/>
     <Page/>
     <br/>
     <br/>

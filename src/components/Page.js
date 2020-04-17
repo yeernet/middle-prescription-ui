@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Input2                                 from './Input2'
 import { Button, Input, InputNumber, Select }    from 'antd'
 import { createForm } from 'rc-form'
+const { Option } = Select
 
 function Page () {
 
@@ -69,7 +70,7 @@ function Page () {
     <div>
       <span className="recipe-user-info-item" style={{ width: '25%' }}>类型：<ChineseRecipeTypeSelector/></span>
       <span className="recipe-user-info-item" style={{ width: '25%' }}>贴数：<InputNumber size={'small'} style={{ minWidth: '20px' }}/></span>
-      <span className="recipe-user-info-item" style={{ width: '50%' }}>服用方法：<ChineseRecipeTypeSelector/></span>
+      <span className="recipe-user-info-item" style={{ width: '50%' }}>服用方法：<Input2 defaultSize={20}/></span>
     </div>
     <div style={{ height: '1em' }}/>
 
@@ -86,13 +87,14 @@ function Page () {
 )
 }
 
-function DrugSelector ({ drugList, onDrugChange }) {
+function DrugSelector ({ drug, onDrugChange = Function }) {
   const { Option } = Select
   const [searchValue, setSearchValue] = useState('')
   const list = require('../mock-data/west_recipe').default.list
   const [filteredList, setFilteredList] = useState(list)
 
   function handleChange(value) {
+     onDrugChange( list.find( drug => drug.id === value ) )
     console.log(`selected ${value}`);
   }
 
@@ -112,6 +114,7 @@ function DrugSelector ({ drugList, onDrugChange }) {
   return (
     <span className="diagnose-list-selector">
       <Select
+        value={drug.drugName}
         showSearch={true}
         style={{ minWidth: '150px' }}
         size={'small'}
@@ -186,18 +189,11 @@ function ChineseRecipeTypeSelector () {
 
   )
 }
-function DrugAdmissionSelector () {
+function DrugAdmissionSelector ({ isWest, form }) {
 
-  const drugAdmissionList = require('../mock-data/smarthos-system-dict-drug-list').drugAdmissionList // 药品用法
-  const westernDrugAdmissionList = require('../mock-data/smarthos-system-dict-drug-list').westernDrugAdmissionList // 药品用法(西药)
-  const drugFrequencyList = require('../mock-data/smarthos-system-dict-drug-list').drugFrequencyList // 用药频率
-
-  const { Option } = Select;
-
-  const children = [
-    {value: '饮片', label: '饮片'},
-    {value: '颗粒', label: '颗粒'}
-  ].map( ({ value, label }) => <Option key={value}>{label}</Option> )
+  const data = require('../mock-data/smarthos-system-dict-drug-list').default
+  const drugAdmissionList = data.obj.drugAdmissionList // 药品用法
+  const westernDrugAdmissionList = data.obj.westernDrugAdmissionList // 药品用法(西药)
 
   function handleChange(value) {
     console.log(`selected ${value}`);
@@ -208,11 +204,34 @@ function DrugAdmissionSelector () {
       <Select
         size={'small'}
         placeholder="请选择"
-        defaultValue={'饮片'}
+        dropdownMatchSelectWidth={80}
         onChange={handleChange}
-      >
-        {children}
-      </Select>
+      >{ (isWest ? westernDrugAdmissionList : drugAdmissionList).map( ({ dictValue, dictKey }) =>
+        <Option key={dictValue}>{dictKey}</Option>
+      )}</Select>
+    </span>
+
+  )
+}
+function DrugFrequencySelector ({ isWest, form }) {
+
+  const data = require('../mock-data/smarthos-system-dict-drug-list').default
+  const drugFrequencyList = data.obj.drugFrequencyList // 用药频率
+
+  function handleChange(value) {
+    console.log(`selected ${value}`);
+  }
+
+  return (
+    <span className="diagnose-list-selector">
+      <Select
+        size={'small'}
+        placeholder="请选择"
+        dropdownMatchSelectWidth={80}
+        onChange={handleChange}
+      >{ drugFrequencyList.map( ({ dictValue, dictKey }) =>
+        <Option key={dictValue}>{dictKey}</Option>
+      )}</Select>
     </span>
 
   )
@@ -248,45 +267,68 @@ function TableChineseRecipe (  ) {
   </table>
 }
 
-function TableWestRecipe (  ) {
+function TableWestRecipe ({ form }) {
 
-  // require('../mock-data/west_recipe').default.list
-  const [list, setList] = useState([])
+  const [list, setList] = useState([{}])
 
-  // noinspection JSXNamespaceValidation
-  return <table className="middle-prescription-ui--recipe-table" style={{ height: '100%', width: '100%' }}>
-    <tr>
-      <th width="20px" >Rp</th>
-      <th >药品名称</th>
-      <th >单次计量</th>
-      <th>单价/金额</th>
-      <th>药品用法</th>
-      <th>用药频率</th>
-      <th>开药量</th>
-      <th>操作</th>
-    </tr>
-    <tr>
-      <td>01</td>
-      <td><DrugSelector/></td>
-      <td><InputNumber style={{ width: '60px' }}/></td>
-      <td><div style={{ wordBreak: 'keep-all', whiteSpace: 'nowrap' }}>2元/g 8元</div></td>
-      <td><ChineseRecipeTypeSelector/></td>
-      <td><ChineseRecipeTypeSelector/></td>
-      <td><Input2/></td>
-      <td><Button type={'primary'} size={'small'}>删除</Button></td>
-    </tr>
-    <tr style={{ opacity: 0.5 }}>
-      <td>02</td>
-      <td><DrugSelector/></td>
-      <td><InputNumber style={{ width: '60px' }}/></td>
-      <td>2元/g 8元</td>
-      <td><ChineseRecipeTypeSelector/></td>
-      <td><ChineseRecipeTypeSelector/></td>
-      <td><Input2/></td>
-      <td><Button type={'primary'} size={'small'} onClick={ () => { alert('最后一行为空白时不会保存, 无需删除') } }>删除</Button></td>
-    </tr>
+
+  function onDrugChange (drug, index) {
+
+    console.log(drug, index)
+    const _list = JSON.parse(JSON.stringify(list))
+    _list[index] = drug
+
+    const lastDrug = _list[_list.length -1]
+    lastDrug && lastDrug.id && _list.push({})
+    setList(_list)
+  }
+
+  function onDeleteButtonClick (index) {
+
+    console.log(index)
+
+    if(index === list.length - 1)
+      return alert('最后一行为空白时不会保存, 无需删除')
+
+    let _list = JSON.parse(JSON.stringify(list))
+    _list.splice(index + 1, 1)
+    console.log(_list)
+    setList(_list)
+
+  }
+
+  return <table
+    className="middle-prescription-ui--recipe-table"
+    style={{ height: '100%', width: '100%', userSelect: 'none' }}
+  >
+    <thead>
+      <tr>
+        <th width="20px" >Rp</th>
+        <th >药品名称</th>
+        <th >单次计量</th>
+        <th>开药量</th>
+        <th>单价/金额</th>
+        <th>药品用法</th>
+        <th>用药频率</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>{ list.map( (drug, index) =>
+      <tr key={ index } style={{ opacity: index === list.length - 1 ? 0.5 : 1 }}>
+        <td>{ (index + 1) < 10 ? '0' + (index + 1) : (index + 1) }</td>
+        <td><DrugSelector drug={drug} onDrugChange={ drug => { onDrugChange(drug, index) } }/></td>
+        <td><InputNumber style={{ width: '60px' }}/></td>
+        <td><Input2/></td>
+        <td><div style={{ wordBreak: 'keep-all', whiteSpace: 'nowrap' }}>2元/g 8元</div></td>
+        <td><DrugAdmissionSelector/></td>
+        <td><DrugFrequencySelector/></td>
+        <td>{ index !== list.length - 1 &&
+          <Button type={'primary'} size={'small'} onClick={  () => { onDeleteButtonClick(index) }}>删除</Button>
+        }</td>
+      </tr>
+    )}</tbody>
   </table>
 }
 
-const PageForm = createForm()(Page)
-export default PageForm
+const PageWithForm = createForm()(Page)
+export default PageWithForm
