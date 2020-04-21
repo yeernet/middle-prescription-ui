@@ -36,3 +36,28 @@
 .middle-prescription-ui *:active {
   outline: none !important;
 }
+
+.middle-prescription-ui .ant-btn-primary:focus,
+.middle-prescription-ui .ant-btn-primary:hover {
+  color: #fff;
+  background-color: #E91E63 !important;
+  border-color: #E91E63 !important;
+}
+
+.middle-prescription-ui--recipe-table
+  tbody
+    tr:last-child
+      td:not(:nth-child(2))
+{
+  opacity: 0;
+}
+
+.middle-prescription-ui--recipe-table
+  tbody
+    tr:not(:last-child):hover
+      td
+        .ant-select-selection-item
+{
+  color: red !important;
+  font-weight: bolder;
+}

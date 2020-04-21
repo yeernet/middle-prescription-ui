@@ -4,7 +4,7 @@ import { Button, Input, InputNumber, Select }    from 'antd'
 import { createForm } from 'rc-form'
 const { Option } = Select
 
-function Page () {
+function Page ({ form, onPrescriptionDataChange = Function }) {
 
   const editorRef = useRef()
 
@@ -61,7 +61,7 @@ function Page () {
     <br/>
 
     <div style={{ minHeight: '260px' }}>
-      <TableWestRecipe/>
+      <TableWestRecipe tableDataChange={ function () { console.log(arguments) } }/>
     </div>
     <br/>
     <hr/>
@@ -80,8 +80,6 @@ function Page () {
       <span className="recipe-user-info-item" style={{ width: '25%' }}>审方医生：<span className="underline"> 李平 </span></span>
     </div>
     <div style={{ height: '.2em' }}/>
-
-
 
   </div>
 )
@@ -118,7 +116,7 @@ function DrugSelector ({ drug, onDrugChange = Function }) {
         showSearch={true}
         style={{ minWidth: '150px' }}
         size={'small'}
-        placeholder="请选择"
+        placeholder="添加药品"
         onChange={handleChange}
         onSearch={onSearch}
       >{
@@ -267,7 +265,7 @@ function TableChineseRecipe (  ) {
   </table>
 }
 
-function TableWestRecipe ({ form }) {
+function TableWestRecipe ({ form, tableDataChange = Function }) {
 
   const [list, setList] = useState([{}])
 
@@ -280,7 +278,7 @@ function TableWestRecipe ({ form }) {
 
     const lastDrug = _list[_list.length -1]
     lastDrug && lastDrug.id && _list.push({})
-    setList(_list)
+    setList(_list.map( (drug, index) => Object.assign(drug, { key: index })  ))
   }
 
   function onDeleteButtonClick (index) {
@@ -291,8 +289,7 @@ function TableWestRecipe ({ form }) {
       return alert('最后一行为空白时不会保存, 无需删除')
 
     let _list = JSON.parse(JSON.stringify(list))
-    _list.splice(index + 1, 1)
-    console.log(_list)
+    _list.splice(index, 1)
     setList(_list)
 
   }
@@ -314,8 +311,8 @@ function TableWestRecipe ({ form }) {
       </tr>
     </thead>
     <tbody>{ list.map( (drug, index) =>
-      <tr key={ index } style={{ opacity: index === list.length - 1 ? 0.5 : 1 }}>
-        <td>{ (index + 1) < 10 ? '0' + (index + 1) : (index + 1) }</td>
+      <tr key={ drug.key }>
+        <td>{ index === list.length - 1 ? '+' : (index + 1) < 10 ? '0' + (index + 1) : (index + 1) }</td>
         <td><DrugSelector drug={drug} onDrugChange={ drug => { onDrugChange(drug, index) } }/></td>
         <td><InputNumber style={{ width: '60px' }}/></td>
         <td><Input2/></td>
@@ -323,7 +320,7 @@ function TableWestRecipe ({ form }) {
         <td><DrugAdmissionSelector/></td>
         <td><DrugFrequencySelector/></td>
         <td>{ index !== list.length - 1 &&
-          <Button type={'primary'} size={'small'} onClick={  () => { onDeleteButtonClick(index) }}>删除</Button>
+          <Button type={'primary'} size={'small'} onClick={ () => { onDeleteButtonClick(index) }}>删除</Button>
         }</td>
       </tr>
     )}</tbody>
