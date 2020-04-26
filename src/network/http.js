@@ -12,7 +12,7 @@ const BASE_PARAMS = {
 const password = 'aAr9MVS9j1'
 
 
-export default function (service, data, method = 'post', loading = true, showError = true) {
+export default function http(service, data, method = 'post', loading = true, showError = true) {
 
   data = Object.assign({}, BASE_PARAMS, data, {service});
 

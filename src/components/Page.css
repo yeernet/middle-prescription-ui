@@ -1,6 +1,8 @@
 @import '~antd/dist/antd.css';
 .underline {
+  display: inline-block;
   text-decoration: underline;
+  min-width: 2em;
 }
 .recipe-user-info-item {
   display: inline-block;
@@ -35,6 +37,7 @@
 .middle-prescription-ui *:focus,
 .middle-prescription-ui *:active {
   outline: none !important;
+  resize: none;
 }
 
 .middle-prescription-ui .ant-btn-primary:focus,
@@ -55,9 +58,14 @@
 .middle-prescription-ui--recipe-table
   tbody
     tr:not(:last-child):hover
-      td
+      td:nth-child(2)
+        .ant-select-selection-item,
+.middle-prescription-ui--recipe-table
+  tbody
+    tr:not(:last-child):focus-within
+      td:nth-child(2)
         .ant-select-selection-item
 {
   color: red !important;
-  font-weight: bolder;
+  background-color: #ffd9e8 !important;
 }

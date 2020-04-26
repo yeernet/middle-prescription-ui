@@ -23,7 +23,7 @@ const west_recipe = {
       'modifierId'       : '0',
       'modifierType'     : 'ADM',
       'modifyTime'       : 1584089609000,
-      'price'            : 0,
+      'price'            : 12,
       'speedyCodeOther'  : '',
       'speedyCodePinyin' : 'amxl',
       'speedyCodeWubi'   : 'amxl'
@@ -49,7 +49,7 @@ const west_recipe = {
       'modifierId'       : '0',
       'modifierType'     : 'ADM',
       'modifyTime'       : 1583890920000,
-      'price'            : 0,
+      'price'            : 13,
       'speedyCodeOther'  : '',
       'speedyCodePinyin' : 'TTT',
       'speedyCodeWubi'   : 'dosageUnit'
@@ -75,7 +75,7 @@ const west_recipe = {
       'modifierId'       : '0',
       'modifierType'     : 'ADM',
       'modifyTime'       : 1583890920000,
-      'price'            : 0,
+      'price'            : 14,
       'speedyCodeOther'  : '',
       'speedyCodePinyin' : 'TTT',
       'speedyCodeWubi'   : 'dosageUnit'
@@ -101,7 +101,7 @@ const west_recipe = {
       'modifierId'       : '0',
       'modifierType'     : 'ADM',
       'modifyTime'       : 1583890920000,
-      'price'            : 0,
+      'price'            : 15,
       'speedyCodeOther'  : '',
       'speedyCodePinyin' : 'TTT',
       'speedyCodeWubi'   : 'dosageUnit'
